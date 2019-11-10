@@ -48,8 +48,9 @@ class _HomePageRealState extends State<HomePageReal>
   double lastScrollPixels;
   double commonHeaderMaxHeight = 0;
   double commonHeaderMinHeight = 0;
-  List itemList = ['推荐', '手机', '数码','运动', '手表','旅游'];
+  List itemList = ['推荐', '手机', '数码', '运动', '手表', '旅游'];
   double _scrollPixels = 0;
+  bool _beginStretch = false;
 
   @override
   void initState() {
@@ -84,8 +85,13 @@ class _HomePageRealState extends State<HomePageReal>
 
       lastScrollPixels = _outScrollController.position.pixels;*/
       _scrollPixels = _outScrollController.position.pixels;
-
+      //if (( _outScrollController.position.pixels-_outScrollController.position.maxScrollExtent > 0 )) {
+        if (( _outScrollController.position.pixels> 10 )) {
+        //开始拉伸
+        _beginStretch = true;
+      }
     });
+
   }
 
   @override
@@ -115,6 +121,7 @@ class _HomePageRealState extends State<HomePageReal>
         child: MyNestedScrollView(
             key: _nestedScrollViewStateKey,
             controller: _outScrollController,
+            physics: BouncingScrollPhysics(),
             pinnedHeaderSliverHeightBuilder: () {
               //防止出现衔接不上问题
               return commonHeaderMinHeight > 1
@@ -136,9 +143,7 @@ class _HomePageRealState extends State<HomePageReal>
               itemList,
               _tabController,
               nestedScrollViewStateKey: _nestedScrollViewStateKey,
-            )
-
-        ),
+            )),
       ),
     );
   }
@@ -152,14 +157,16 @@ class _HomePageRealState extends State<HomePageReal>
       length: length,
       vsync: this,
     );
-    _tabController.addListener(() {
-    });
+    _tabController.addListener(() {});
   }
 
   Widget getItem(BuildContext context, int index) {
     return Column(
       children: <Widget>[
-        Container(child: _scrollPixels < 10 ? Text("$_scrollPixels- 111") : Text("$_scrollPixels-  222")),
+        Container(
+            child: _scrollPixels < 10
+                ? Text("$_beginStretch $_scrollPixels- 111")
+                : Text("$_beginStretch $_scrollPixels-  222")),
       ],
     );
   }
@@ -171,5 +178,3 @@ class _HomePageRealState extends State<HomePageReal>
     super.dispose();
   }
 }
-
-
