@@ -65,7 +65,7 @@ class _HomePageViewState extends State<HomePageView>
         indicatorSize: FQTabBarIndicatorSize.label,
         indicatorWeight: 3,
         labelPadding: EdgeInsets.fromLTRB(
-            isScrollable ? 15 : 5, 5, isScrollable ? 15 : 5, 5),
+            isScrollable ? 7.5 : 5, 5, isScrollable ? 7.5 : 5, 5),
         unselectedLabelStyle: TextStyle(
             color: Color(0xFFABADB2),
             fontSize: 15,

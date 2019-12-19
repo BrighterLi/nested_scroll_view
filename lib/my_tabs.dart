@@ -1018,6 +1018,10 @@ class _TabBarState extends State<FQLTabBar> {
 
     final List<Widget> wrappedTabs = List<Widget>(widget.tabs.length);
     for (int i = 0; i < widget.tabs.length; i += 1) {
+      /*if(i == 0) {
+        widget.labelPadding = EdgeInsets.fromLTRB(
+    20 , 5, 0, 5);
+      }*/
       wrappedTabs[i] = Center(
         heightFactor: 1.0,
         child: Padding(
@@ -1101,6 +1105,11 @@ class _TabBarState extends State<FQLTabBar> {
       ),
     );
 
+    tabBar = Row(children: <Widget>[
+      Container(width: 11.5,),
+      tabBar,
+      Container(width: 11.5,)
+    ],);
     if (widget.isScrollable) {
       _scrollController ??= _TabBarScrollController(this);
       tabBar = SingleChildScrollView(

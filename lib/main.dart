@@ -5,11 +5,16 @@ import 'package:nested_scroll_view/home_page_view.dart';
 import 'package:nested_scroll_view/old_extended_nested_scroll_view.dart';
 import 'package:nested_scroll_view/page_state_manager.dart';
 
+
 void main() {
-  FlutterError.onError = (FlutterErrorDetails details) {};
+  FlutterError.onError = (FlutterErrorDetails details) {
+    Zone.current.handleUncaughtError(details.exception, details.stack);
+  };
   runZoned(
     () => runApp(HomePage()),
-    onError: (Object obj, StackTrace stack) {},
+    onError: (Object obj, StackTrace stack) {
+       print('stack: $stack');
+    },
   );
 }
 
@@ -48,7 +53,7 @@ class _HomePageRealState extends State<HomePageReal>
   double lastScrollPixels;
   double commonHeaderMaxHeight = 0;
   double commonHeaderMinHeight = 0;
-  List itemList = ['推荐', '手机', '数码', '运动', '手表', '旅游'];
+  List itemList = ['推荐', '手机', '数码', '运动', '手表', '旅游','坚决', '流量','化就','旅游','坚决', '流量','化就'];
   double _scrollPixels = 0;
   bool _beginStretch = false;
 
@@ -86,10 +91,10 @@ class _HomePageRealState extends State<HomePageReal>
       lastScrollPixels = _outScrollController.position.pixels;*/
       _scrollPixels = _outScrollController.position.pixels;
       //if (( _outScrollController.position.pixels-_outScrollController.position.maxScrollExtent > 0 )) {
-        if (( _outScrollController.position.pixels> 10 )) {
+        /*if (( _outScrollController.position.pixels> 10 )) {
         //开始拉伸
         _beginStretch = true;
-      }
+      }*/
     });
 
   }
@@ -117,39 +122,50 @@ class _HomePageRealState extends State<HomePageReal>
     initTabController();
     return Container(
       color: Color(0xFFFFFFFF),
-      child: ScrollConfiguration(
-        child: MyNestedScrollView(
-            key: _nestedScrollViewStateKey,
-            controller: _outScrollController,
-            physics: BouncingScrollPhysics(),
-            pinnedHeaderSliverHeightBuilder: () {
-              //防止出现衔接不上问题
-              return commonHeaderMinHeight > 1
-                  ? (commonHeaderMinHeight - 1)
-                  : commonHeaderMinHeight;
-            },
-            headerSliverBuilder: (context, innerScrolled) => <Widget>[
-                  MediaQuery.removePadding(
-                      removeTop: true,
-                      context: context,
-                      child: SliverList(
-                          delegate: SliverChildBuilderDelegate(getItem,
-                              childCount: 10)))
-                ],
-            innerScrollPositionKeyBuilder: () {
-              return Key(itemList[_tabController.index]);
-            },
-            body: HomePageView(
-              itemList,
-              _tabController,
-              nestedScrollViewStateKey: _nestedScrollViewStateKey,
-            )),
-      ),
+        //child: RefreshIndicator(
+         // onRefresh: _onRefresh,
+          child: MyNestedScrollView(
+              key: _nestedScrollViewStateKey,
+              controller: _outScrollController,
+              physics: BouncingScrollPhysics(),
+              pinnedHeaderSliverHeightBuilder: () {
+                //防止出现衔接不上问题
+                return commonHeaderMinHeight > 1
+                    ? (commonHeaderMinHeight - 1)
+                    : commonHeaderMinHeight;
+              },
+              headerSliverBuilder: (context, innerScrolled) => <Widget>[
+                    MediaQuery.removePadding(
+                        removeTop: true,
+                        context: context,
+                        child: SliverList(
+                            //列表第一部分
+                            delegate: SliverChildBuilderDelegate(getItem,
+                                childCount: 10)))
+                  ],
+              innerScrollPositionKeyBuilder: () {
+                return Key(itemList[_tabController.index]);
+              },
+              //列表第二部分
+              body: HomePageView(
+                itemList,
+                _tabController,
+                nestedScrollViewStateKey: _nestedScrollViewStateKey,
+              )),
+      //),
     );
   }
 
+  Future<Null> _onRefresh() async {
+    /*await Future.delayed(Duration(seconds: 3), () {
+      print('refresh');
+      setState(() {
+      });
+    });*/
+  }
+
   void initTabController() {
-    int length = 6;
+    int length = itemList.length;
     int index = 0;
 
     _tabController = TabController(
